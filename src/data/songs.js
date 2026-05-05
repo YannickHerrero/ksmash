@@ -1,361 +1,125 @@
-// Top 10 songs per artist
-// Each song maps to its parent artist ID from groups.js
+// Verified songs per artist (from iTunes API + Spotify/web research)
+// Only includes songs confirmed to exist
 
 import groups from "./groups";
 
 const songsByArtist = {
-  // BLACKPINK (id: 1)
-  1: [
-    "DDU-DU DDU-DU", "How You Like That", "Pink Venom", "Kill This Love",
-    "Lovesick Girls", "Shut Down", "Boombayah", "As If It's Your Last",
-    "Playing With Fire", "Whistle",
-  ],
-  // BTS (id: 2)
-  2: [
-    "Dynamite", "Butter", "Boy With Luv", "Spring Day",
-    "Fake Love", "DNA", "Blood Sweat & Tears", "IDOL",
-    "MIC Drop", "Fire",
-  ],
-  // TWICE (id: 3)
-  3: [
-    "What is Love?", "Fancy", "Feel Special", "TT",
-    "Cheer Up", "I Can't Stop Me", "Talk That Talk", "Likey",
-    "Yes or Yes", "Signal",
-  ],
-  // Stray Kids (id: 4)
-  4: [
-    "God's Menu", "MANIAC", "Back Door", "Thunderous",
-    "S-Class", "MIROH", "Loca", "CASE 143",
-    "Hellevator", "District 9",
-  ],
-  // aespa (id: 5)
-  5: [
-    "Supernova", "Next Level", "Savage", "Black Mamba",
-    "Drama", "Armageddon", "Dreams Come True", "Spicy",
-    "Girls", "Whip It",
-  ],
-  // NewJeans (id: 7)
-  7: [
-    "Super Shy", "Ditto", "Hype Boy", "OMG",
-    "Attention", "ETA", "Cookie", "New Jeans",
-    "Hurt", "How Sweet",
-  ],
-  // IVE (id: 8)
-  8: [
-    "LOVE DIVE", "After LIKE", "I AM", "Eleven",
-    "Kitsch", "Baddie", "Either Way", "Off The Record",
-    "Mine", "Accendio",
-  ],
-  // LE SSERAFIM (id: 9)
-  9: [
-    "ANTIFRAGILE", "Perfect Night", "FEARLESS", "UNFORGIVEN",
-    "Smart", "Eve, Psyche & the Bluebeard's wife", "EASY",
-    "Blue Flame", "Impurities", "Good Bones",
-  ],
-  // ITZY (id: 10)
-  10: [
-    "WANNABE", "DALLA DALLA", "LOCO", "ICY",
-    "SNEAKERS", "Mafia In the Morning", "Not Shy", "CAKE",
-    "Cheshire", "Voltage",
-  ],
-  // ATEEZ (id: 11)
-  11: [
-    "BOUNCY", "Guerrilla", "WONDERLAND", "Answer",
-    "Say My Name", "Fireworks (I'm The One)", "Deja Vu", "HALAZIA",
-    "Wave", "Inception",
-  ],
-  // Red Velvet (id: 14)
-  14: [
-    "Psycho", "Bad Boy", "Red Flavor", "Peek-A-Boo",
-    "Russian Roulette", "Queendom", "Power Up", "Dumb Dumb",
-    "Ice Cream Cake", "Feel My Rhythm",
-  ],
-  // NMIXX (id: 15)
-  15: [
-    "O.O", "DASH", "Love Me Like This", "Party O'Clock",
-    "Soñar (Breaker)", "DICE", "Young, Dumb, Stupid", "Run For Roses",
-    "See That?", "PAXXWORD",
-  ],
-  // Jungkook (id: 20)
-  20: [
-    "Seven", "Standing Next to You", "Dreamers", "3D",
-    "Still With You", "Euphoria", "Left and Right", "My You",
-    "Yes or No", "Hate You",
-  ],
-  // IU (id: 21)
-  21: [
-    "Blueming", "Love Poem", "Celebrity", "eight",
-    "Palette", "Good Day", "Through the Night", "LILAC",
-    "Above the Time", "You & I",
-  ],
-  // MAMAMOO (id: 22)
-  22: [
-    "HIP", "Gogobebe", "Starry Night", "Decalcomanie",
-    "You're the Best", "AYA", "Egotistic", "Wind Flower",
-    "Um Oh Ah Yeh", "Piano Man",
-  ],
-  // Lisa (id: 24)
-  24: [
-    "LALISA", "MONEY", "ROCKSTAR", "New Woman",
-    "Moonlit Floor", "SG", "Tik Tok", "Swallow",
-    "Leave It All Behind", "Sexy Girl",
-  ],
-  // Rosé (id: 25)
-  25: [
-    "APT.", "On The Ground", "Gone", "toxic till the end",
-    "number one girl", "GONE", "Not the Same", "Too Bad For Us",
-    "Two Years", "drinks or coffee",
-  ],
-  // MONSTA X (id: 27)
-  27: [
-    "Shoot Out", "Love Killa", "Hero", "Jealousy",
-    "Gambler", "Beautiful", "Dramarama", "Rush Hour",
-    "Follow", "Alligator",
-  ],
-  // I-DLE (id: 28)
-  28: [
-    "Queencard", "TOMBOY", "LATATA", "Nxde",
-    "HANN", "Super Lady", "Oh my god", "LION",
-    "Uh-Oh", "Senorita",
-  ],
-  // ILLIT (id: 33)
-  33: [
-    "Magnetic", "Lucky Girl Syndrome", "My World",
-    "Cherish (My Love)", "Midnight Fiction", "TICK-TACK",
-    "Pimple", "Sunrise", "Tell Me I'm Pretty", "Memories",
-  ],
-  // BABYMONSTER (id: 34)
-  34: [
-    "SHEESH", "Batter Up", "DRIP", "Forever",
-    "Like That", "Dream", "Stuck In The Middle",
-    "CLIK CLAK", "Monsters (Intro)", "BILLIONAIRE",
-  ],
-  // KISS OF LIFE (id: 35)
-  35: [
-    "Midas Touch", "Shhh", "Bad News", "Sticky",
-    "Nobody Knows", "Sugarcoat", "Te Quiero", "Get Loud",
-    "Igloo", "Gentleman",
-  ],
-  // FIFTY FIFTY (id: 36)
-  36: [
-    "Cupid", "Barbie Dreams", "Tell Me", "Lovin' Me",
-    "Log in My Dreams", "Gravity", "SOS", "Lucky Me",
-    "Higher Than Atlantis", "Run",
-  ],
-  // Jennie (id: 37)
-  37: [
-    "SOLO", "You & Me", "One Of The Girls", "Mantra",
-    "Damn Right", "Slow Motion", "Like JENNIE", "Zen",
-    "Love Hangover", "Letters To Myself",
-  ],
-  // V (id: 38)
-  38: [
-    "Slow Dancing", "Love Me Again", "FRI(END)S", "Rainy Days",
-    "Christmas Tree", "Scenery", "Winter Bear", "Sweet Night",
-    "Blue", "For Us",
-  ],
-  // Suga (id: 39)
-  39: [
-    "Daechwita", "Haegeum", "Agust D", "People Pt.2",
-    "The Last", "Give It To Me", "D-2", "Amygdala",
-    "Interlude: Shadow", "Snooze",
-  ],
-  // BIGBANG (id: 43)
-  43: [
-    "BANG BANG BANG", "Fantastic Baby", "Haru Haru", "FXXK IT",
-    "Blue", "Bae Bae", "Last Dance", "Loser",
-    "SOBER", "Lies",
-  ],
-  // G-Dragon (id: 44)
-  44: [
-    "Crooked", "Heartbreaker", "Coup d'Etat", "Untitled, 2014",
-    "That XX", "Power", "POWER", "Home",
-    "Superstar", "She's Gone",
-  ],
-  // 2NE1 (id: 45)
-  45: [
-    "I Am the Best", "Fire", "Come Back Home", "Lonely",
-    "Missing You", "Go Away", "I Don't Care", "Ugly",
-    "Falling in Love", "Gotta Be You",
-  ],
-  // EVERGLOW (id: 46)
-  46: [
-    "DUN DUN", "Adios", "LA DI DA", "Pirate",
-    "First", "Bon Bon Chocolat", "Slay", "All My Girls",
-    "Untouchable", "No Lie",
-  ],
-  // Hwasa (id: 47)
-  47: [
-    "Maria", "I'm a B", "Twit", "Chili",
-    "Dumhdurum", "LMM", "Kidding", "Bless U",
-    "Don't Give a What", "I Love My Body",
-  ],
-  // iKON (id: 49)
-  49: [
-    "Love Scenario", "Killing Me", "Goodbye Road", "I'm OK",
-    "Rhythm Ta", "BLING BLING", "Dumb & Dumber", "Why Why Why",
-    "But You", "Dive",
-  ],
-  // Kep1er — removed, skip
-  // VIVIZ — removed, skip
-  // tripleS — removed, skip
-  // Billlie — removed, skip
-  // Sunmi (id: 54)
-  54: [
-    "Gashina", "Heroine", "Siren", "pporappippam",
-    "Noir", "Tail", "Lalalay", "Full Moon",
-    "24 hours", "Heart Burn",
-  ],
-  // Chungha (id: 55)
-  55: [
-    "Gotta Go", "Roller Coaster", "Snapping", "Bicycle",
-    "Play", "Querencia", "Stay Tonight", "Love U",
-    "Flying on Faith", "Sparkling",
-  ],
-  // XG (id: 56)
-  56: [
-    "Tippy Toes", "LEFT RIGHT", "SHOOTING STAR", "GRL GVNG",
-    "PUPPET SHOW", "MASCARA", "WOKE UP", "NEW DANCE",
-    "HESONOO", "Tricky",
-  ],
-  // Young Posse (id: 57)
-  57: [
-    "XXL", "Scars", "ROTY", "Skyline",
-    "DND", "Macaroni Cheese", "Blue Dot", "OTB",
-    "Young Posse Up", "Freestyle",
-  ],
-  // BIBI (id: 58)
-  58: [
-    "JOOGEY", "Animal Farm", "Binu", "BAD SAD AND MAD",
-    "Kazino", "The Weekend", "Cigarette and Condom", "Blade",
-    "Vengeance", "PADO",
-  ],
-  // Jvcki Wai (id: 59)
-  59: [
-    "Fadeaway", "Work Out", "Enchanted Propaganda", "DDING",
-    "119 REMIX", "IMJMWDP", "Go Back", "Hyperreal",
-    "KOCEAN", "Anarchy",
-  ],
-  // Zico (id: 60)
-  60: [
-    "Any Song", "SPOT!", "BERMUDA TRIANGLE", "I Am You, You Are Me",
-    "She's a Baby", "Artist", "Tough Cookie", "Boys and Girls",
-    "No You Can't", "Eureka",
-  ],
-  // Giriboy (id: 61)
-  61: [
-    "We Don't Talk Together", "Fluttering Feelings", "flex",
-    "You Look So Good to Me", "Mechanical", "I Don't Know",
-    "Sexual Perceptions", "Bad Person", "Madeleine", "Novel",
-  ],
-  // HyunA (id: 62)
-  62: [
-    "Bubble Pop!", "RED", "Babe", "I'm Not Cool",
-    "Roll Deep", "Lip & Hip", "Ice Cream", "Change",
-    "Flower Shower", "Ping Pong",
-  ],
-  // KARD (id: 63)
-  63: [
-    "Icky", "Cake", "Don't Recall", "Oh NaNa",
-    "Bomb Bomb", "Gunshot", "Red Moon", "Hola Hola",
-    "Ring the Alarm", "Dumb Litty",
-  ],
-  // BVNDIT (id: 64)
-  64: [
-    "Hocus Pocus", "Dramatic", "Be Ambitious!", "Cool",
-    "Children", "Carnival", "Bravado", "Come to This",
-    "Ribbon", "VENOM",
-  ],
-  // Weki Meki (id: 65)
-  65: [
-    "I Don't Like Your Girlfriend", "Picky Picky", "Tiki-Taka (99%)",
-    "La La La", "Cool", "Crush", "Butterfly", "Lucky",
-    "CoinciDestiny", "Dazzle Dazzle",
-  ],
-  // MOMOLAND (id: 66)
-  66: [
-    "BBoom BBoom", "BAAM", "Ready Or Not", "Banana Chacha",
-    "I'm So Hot", "Wonderful Love", "JJan! Koong! Kwang!", "Thumbs Up",
-    "Yummy Yummy Love", "Tiki Taka",
-  ],
-  // MEOVV (id: 67)
-  67: [
-    "Meow", "Toxic", "Body", "Hands Up",
-    "Drop Top", "Burning Up", "Lit Right Now", "ME ME ME",
-    "CATITUDE", "WILD",
-  ],
-  // Nature (id: 68)
-  68: [
-    "RICA RICA", "I'm So Pretty", "SOME (You'll Be Mine)", "OOPSIE (My Bad)",
-    "Allegro Cantabile", "DIVE", "Dream About U", "Bing Bing",
-    "Girls and Flowers", "Limbo!",
-  ],
-  // Jisoo (id: 69)
-  69: [
-    "FLOWER", "All Eyes On Me", "Clarity", "Sunshine",
-    "Closest", "Yuki no Hana", "Liar", "Miss You",
-    "Pleasure Is All Mine", "Stay",
-  ],
-  // LOONA (id: 70)
-  70: [
-    "Butterfly", "Hi High", "PTT (Paint The Town)", "So What",
-    "Why Not?", "Star", "Heart Attack", "Hula Hoop",
-    "favOriTe", "Flip That",
-  ],
-  // KATSEYE (id: 71)
-  71: [
-    "Touch", "My Way", "Gnarly", "SIS (Soft Is Strong)",
-    "Here I Am", "I'll Be Loving You", "Come A Little Closer",
-    "Debut", "One Day", "So Happy",
-  ],
-  // Yuqi (id: 72)
-  72: [
-    "Freak", "On Clap", "Bonnie & Clyde", "Giant",
-    "BTHF", "a]ddICT", "All About U", "Stars",
-    "Everytime", "I Feel So Lucky",
-  ],
-  // BewhY (id: 73)
-  73: [
-    "Forever", "Gottasadae", "Veni Vidi Vici", "Hollow",
-    "Time Travel", "B-BOY", "Downthere", "Blind Star",
-    "Come Back Home", "Como Te Llamas",
-  ],
-  // Bobby (id: 74)
-  74: [
-    "HOLUP!", "I Love You", "Runaway", "U Mad",
-    "Tendae", "I'm Different", "Bounce", "L4L (Lookin' for Luv)",
-    "Download", "ALIEN",
-  ],
-  // A.C.E (id: 75)
-  75: [
-    "Under Cover", "Savage", "Cactus", "Take Me Higher",
-    "Favorite Boys", "Callin'", "Stand By You", "Changer",
-    "Slow Dive", "Supernatural",
-  ],
-  // Dreamcatcher (id: 76)
-  76: [
-    "Odd Eye", "BOCA", "Scream", "Deja Vu",
-    "Chase Me", "Good Night", "Piri", "BEcause",
-    "MAISON", "Bonvoyage",
-  ],
-  // Soyeon (id: 77)
-  77: [
-    "Jelly", "Beam Beam", "Idle Song", "Is This Bad B****** Number?",
-    "Psycho", "Weather", "Quit", "Flame",
-    "Hann (Alone in Winter)", "Windy",
-  ],
-  // Mino (id: 78)
-  78: [
-    "Fiancé", "Fear", "I'm Him", "Body",
-    "Okey Dokey", "Run Away", "Everyday", "Location",
-    "Hit Me", "Tang!",
-  ],
-  // Jessi (id: 79)
-  79: [
-    "NUNU NANA", "What Type of X", "Cold Blooded", "Drip",
-    "Zoom", "Gucci", "Ssenunni", "Who Dat B",
-    "Star", "Gum",
-  ],
+  // BLACKPINK (1)
+  1: ["How You Like That", "DDU-DU DDU-DU", "Pink Venom", "Kill This Love", "BOOMBAYAH", "Shut Down", "Pretty Savage", "Lovesick Girls", "As If It's Your Last", "Ice Cream"],
+  // BTS (2)
+  2: ["Butter", "Boy With Luv", "Dynamite", "FAKE LOVE", "Blood Sweat & Tears", "DNA", "MIC Drop", "Run BTS", "Black Swan", "Spring Day"],
+  // TWICE (3)
+  3: ["What is Love?", "FANCY", "The Feels", "I CAN'T STOP ME", "TT", "Feel Special", "LIKEY", "YES or YES", "Cheer Up", "Signal"],
+  // Stray Kids (4)
+  4: ["MANIAC", "God's Menu", "LALALALA", "S-Class", "MEGAVERSE", "Back Door", "Thunderous", "MIROH", "Chk Chk Boom", "CASE 143"],
+  // aespa (5)
+  5: ["Whiplash", "Drama", "Supernova", "Armageddon", "Black Mamba", "Spicy", "Next Level", "Savage", "Illusion", "Girls"],
+  // NewJeans (7)
+  7: ["OMG", "Ditto", "Attention", "ETA", "How Sweet", "Super Shy", "Cookie", "Hype Boy", "Supernatural", "New Jeans"],
+  // IVE (8)
+  8: ["I AM", "LOVE DIVE", "After LIKE", "ELEVEN", "Baddie", "Kitsch", "Off The Record", "Either Way", "Mine", "Accendio"],
+  // LE SSERAFIM (9)
+  9: ["CRAZY", "ANTIFRAGILE", "Perfect Night", "Smart", "EASY", "Eve, Psyche & The Bluebeard's wife", "FEARLESS", "UNFORGIVEN", "HOT", "CELEBRATION"],
+  // ITZY (10)
+  10: ["WANNABE", "DALLA DALLA", "LOCO", "Not Shy", "In the Morning", "Cheshire", "SNEAKERS", "ICY", "CAKE", "Voltage"],
+  // ATEEZ (11)
+  11: ["BOUNCY", "Guerrilla", "Say My Name", "WONDERLAND", "Answer", "Fireworks (I'm The One)", "Deja Vu", "HALAZIA", "Wave", "Inception"],
+  // Red Velvet (14)
+  14: ["Psycho", "Bad Boy", "Red Flavor", "Russian Roulette", "Peek-A-Boo", "Power Up", "Ice Cream Cake", "Dumb Dumb", "Happiness", "Rookie"],
+  // NMIXX (15)
+  15: ["O.O", "DICE", "Love Me Like This", "DASH", "Soñar (Breaker)", "Run For Roses", "TANK", "Young, Dumb, Stupid", "Blue Valentine", "Party O'Clock"],
+  // Jungkook (20)
+  20: ["Seven", "Standing Next to You", "Left and Right", "Still With You", "Yes or No", "Hate You", "Somebody", "Dreamers", "Please Don't Change", "3D"],
+  // IU (21)
+  21: ["Love wins all", "Lilac", "Blueming", "Good Day", "eight", "Bbibbi", "Celebrity", "Palette", "Through the Night", "My Old Story"],
+  // MAMAMOO (22)
+  22: ["HIP", "gogobebe", "Egotistic", "Starry Night", "Dingga", "Decalcomanie", "Aya", "Mr. Ambiguous", "Yes I Am", "Um Oh Ah Yeh"],
+  // Lisa (24)
+  24: ["MONEY", "LALISA", "ROCKSTAR", "New Woman", "Moonlit Floor", "SG", "Sexy Deadly Killer", "NANANANA"],
+  // Rosé (25)
+  25: ["APT.", "On The Ground", "Gone", "Number One Girl", "Toxic Till The End", "Stay A Little Longer", "Too Bad", "Hard To Love"],
+  // MONSTA X (27)
+  27: ["HERO", "Love Killa", "Shoot Out", "Beautiful", "Dramarama", "WHO DO U LOVE?", "MIDDLE OF THE NIGHT", "Gambler", "Follow", "Jealousy"],
+  // I-DLE (28)
+  28: ["Queencard", "TOMBOY", "HANN", "Nxde", "Oh my god", "Señorita", "LATATA", "DUMDi DUMDi", "Super Lady", "MY BAG"],
+  // ILLIT (33)
+  33: ["Magnetic", "Lucky Girl Syndrome", "Tick-Tack", "My World", "Cherish (My Love)", "IYKYK", "NOT CUTE ANYMORE"],
+  // BABYMONSTER (34)
+  34: ["SHEESH", "BATTER UP", "DRIP", "LIKE THAT", "FOREVER", "BILLIONAIRE", "HOT SAUCE", "WE GO UP"],
+  // KISS OF LIFE (35)
+  35: ["Midas Touch", "Shhh", "Bad News", "Sticky", "Nobody Knows", "Sugarcoat", "Te Quiero", "Countdown", "Igloo", "Get Loud"],
+  // FIFTY FIFTY (36)
+  36: ["Cupid", "Tell Me", "Lovin' Me", "SOS", "Barbie Dreams", "Pookie", "Log in My Dreams"],
+  // Jennie (37)
+  37: ["SOLO", "Mantra", "You & Me", "One Of The Girls", "like JENNIE", "Damn Right", "Start A War"],
+  // V (38)
+  38: ["Slow Dancing", "Love Me Again", "Rainy Days", "For Us", "FRI(END)S", "Sweet Night", "Blue", "Winter Bear", "Christmas Tree", "Scenery"],
+  // Suga (39)
+  39: ["Daechwita", "Haegeum", "The Last", "Agust D", "Give It To Me", "So Far Away", "Amygdala", "People Pt.2", "Interlude: Shadow", "SDL"],
+  // BIGBANG (43)
+  43: ["BANG BANG BANG", "Fantastic Baby", "FXXK IT", "Still Life", "Haru Haru", "LAST DANCE", "LOSER", "Lies", "IF YOU", "FLOWER ROAD"],
+  // G-Dragon (44)
+  44: ["Heartbreaker", "Crooked", "Untitled 2014", "Crayon", "POWER", "WHO YOU?", "One of a Kind", "Black", "Coup d'État", "Bullshit"],
+  // 2NE1 (45)
+  45: ["I Am the Best", "Fire", "Come Back Home", "I Love You", "I Don't Care", "Lonely", "Missing You", "Goodbye", "Gotta Be You", "Ugly"],
+  // EVERGLOW (46)
+  46: ["DUN DUN", "Adios", "LA DI DA", "Bon Bon Chocolat", "First", "Pirate", "Slay", "Zombie", "Promise", "Hush"],
+  // Hwasa (47)
+  47: ["Twit", "María", "I Love My Body", "Guilty Pleasure", "NA", "Star", "Lemon", "Ma Baby"],
+  // iKON (49)
+  49: ["LOVE SCENARIO", "KILLING ME", "I'M OK", "BLING BLING", "GOODBYE ROAD", "RHYTHM TA", "B-DAY", "Why Why Why", "Dive", "Rubber Band"],
+  // Sunmi (54)
+  54: ["Gashina", "Heroine", "Pporappippam", "LALALAY", "Noir", "TAIL", "Siren", "Heart Burn", "You can't sit with us", "24 Hours"],
+  // Chungha (55)
+  55: ["Gotta Go", "Snapping", "Bicycle", "Roller Coaster", "Stay Tonight", "Love U", "Killing Me", "Chica", "Sparkling", "Why Don't You Know"],
+  // XG (56)
+  56: ["LEFT RIGHT", "SHOOTING STAR", "WOKE UP", "NEW DANCE", "GRL GVNG", "Tippy Toes", "MASCARA", "PUPPET SHOW", "TGIF", "Cozy"],
+  // Young Posse (57)
+  57: ["XXL", "Scars", "ROTY", "MACARONI CHEESE", "OTB", "FREESTYLE", "ATE THAT", "YOUNG POSSE UP", "POSSE UP!"],
+  // BIBI (58)
+  58: ["Bam Yang Gang", "BIBI Vengeance", "Pado", "Binu", "Sugar Rush", "Scott and Zelda", "Animal Farm", "BAD SAD AND MAD"],
+  // Jvcki Wai (59)
+  59: ["Enchanted Propaganda", "DDING", "Kocean", "Hyperreal", "Anarchy", "Fadeaway"],
+  // Zico (60)
+  60: ["Any Song", "SPOT!", "BERMUDA TRIANGLE", "I Am You You Are Me", "She's a Baby", "Okey Dokey", "SoulMate", "Freak", "Summer Hate", "ANTI"],
+  // Giriboy (61)
+  61: ["We Don't Talk Together", "Flex", "Sooljalee", "Take Care Of You", "Traffic Control", "Don't Let Me Go"],
+  // HyunA (62)
+  62: ["I'm Not Cool", "Lip & Hip", "Babe", "Bubble Pop!", "Roll Deep", "FLOWER SHOWER", "Red", "How's This", "Nabillera"],
+  // KARD (63)
+  63: ["Oh NaNa", "Bomb Bomb", "Hola Hola", "Don't Recall", "Dumb Litty", "ICKY", "Red Moon", "Gunshot", "You In Me", "Rumor"],
+  // BVNDIT (64)
+  64: ["Dramatic", "Hocus Pocus", "Children", "JUNGLE", "VENOM", "Come and Get It", "Dumb", "Cool", "Fly", "My Error"],
+  // Weki Meki (65)
+  65: ["I don't like your Girlfriend", "Tiki-Taka", "DAZZLE DAZZLE", "Picky Picky", "Crush", "Oopsy", "La La La", "COOL"],
+  // MOMOLAND (66)
+  66: ["Bboom Bboom", "Baam", "I'm So Hot", "Thumbs Up", "Ready Or Not", "Freeze", "JJan! Koong! Kwang!", "Yummy Yummy Love"],
+  // MEOVV (67)
+  67: ["MEOW", "HANDS UP", "ME ME ME", "BURNING UP", "DROP TOP", "LIT RIGHT NOW"],
+  // Nature (68)
+  68: ["I'm So Pretty", "RICA RICA", "SOME (You'll Be Mine)", "OOPSIE (My Bad)", "Allegro Cantabile"],
+  // Jisoo (69)
+  69: ["FLOWER", "All Eyes On Me", "Clarity", "Sunshine", "Closest"],
+  // LOONA (70)
+  70: ["Hi High", "Heart Attack", "PTT (Paint The Town)", "Why Not?", "Love Cherry Motion", "Eclipse", "favOriTe", "Flip That", "Stylish", "Star"],
+  // KATSEYE (71)
+  71: ["Touch", "My Way", "Gnarly", "SIS (Soft Is Strong)", "Debut"],
+  // Yuqi (72)
+  72: ["Freak", "On Clap", "Bonnie & Clyde", "Giant", "All About U"],
+  // BewhY (73)
+  73: ["Gottasadae", "Forever", "Veni Vidi Vici", "Time Travel", "Challan"],
+  // Bobby (74)
+  74: ["HOLUP!", "I Love You", "U MAD", "Runaway", "Bounce"],
+  // A.C.E (75)
+  75: ["Under Cover", "Savage", "Cactus", "Take Me Higher", "Favorite Boys", "Callin'", "Stand By You"],
+  // Dreamcatcher (76)
+  76: ["Odd Eye", "BOCA", "Scream", "Deja Vu", "Chase Me", "Good Night", "Piri", "BEcause", "MAISON", "Bonvoyage"],
+  // Soyeon (77)
+  77: ["Jelly", "Beam Beam", "Idle Song", "Psycho", "Weather", "Quit"],
+  // Mino (78)
+  78: ["Fiancé", "Fear", "I'm Him", "Body", "Okey Dokey", "Run Away", "Tang!"],
+  // Jessi (79)
+  79: ["ZOOM", "What Type of X", "NUNU NANA", "Gum", "Cold Blooded", "STAR", "Ssenunni", "Who Dat B"],
 };
 
 // Build flat song list with IDs
@@ -372,7 +136,7 @@ for (const [artistId, titles] of Object.entries(songsByArtist)) {
       title,
       artistId: artist.id,
       artistName: artist.name,
-      wiki: artist.wiki, // reuse artist image for song cards
+      wiki: artist.wiki,
     });
   }
 }
