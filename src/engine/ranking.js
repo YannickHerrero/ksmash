@@ -79,4 +79,5 @@ export function getRankings(state, groups) {
     .sort((a, b) => b.rating - a.rating);
 }
 
-export const CHECKPOINT_INTERVAL = 10;
+export const FIRST_CHECKPOINT = 25;
+export const CHECKPOINT_INTERVAL = 15;

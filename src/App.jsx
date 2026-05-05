@@ -6,6 +6,7 @@ import {
   recordChoice,
   getNextMatchup,
   getRankings,
+  FIRST_CHECKPOINT,
   CHECKPOINT_INTERVAL,
 } from "./engine/ranking";
 import Welcome from "./components/Welcome";
@@ -40,8 +41,9 @@ function App() {
 
       // Check if we hit a checkpoint
       if (
-        newState.totalComparisons % CHECKPOINT_INTERVAL === 0 &&
-        newState.totalComparisons > 0
+        (newState.totalComparisons === FIRST_CHECKPOINT ||
+          (newState.totalComparisons > FIRST_CHECKPOINT &&
+            (newState.totalComparisons - FIRST_CHECKPOINT) % CHECKPOINT_INTERVAL === 0))
       ) {
         setShowCheckpoint(true);
       } else {
@@ -109,7 +111,7 @@ function App() {
                     width: `${Math.min(
                       100,
                       (state.totalComparisons /
-                        (CHECKPOINT_INTERVAL * 3)) *
+                        (FIRST_CHECKPOINT + CHECKPOINT_INTERVAL * 2)) *
                         100
                     )}%`,
                   }}
