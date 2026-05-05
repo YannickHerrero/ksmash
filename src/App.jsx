@@ -1,5 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import groups from "./data/groups";
+import { prefetchImages } from "./hooks/useWikiImages";
 import {
   createRankings,
   recordChoice,
@@ -17,6 +18,11 @@ function App() {
   const [state, setState] = useState(null);
   const [matchup, setMatchup] = useState(null);
   const [showCheckpoint, setShowCheckpoint] = useState(false);
+
+  // Prefetch all Wikipedia images on mount
+  useEffect(() => {
+    prefetchImages(groups);
+  }, []);
 
   const startGame = useCallback(() => {
     const initial = createRankings(groups);

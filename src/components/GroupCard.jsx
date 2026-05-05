@@ -1,5 +1,8 @@
+import { useWikiImage } from "../hooks/useWikiImages";
+
 export default function GroupCard({ group, side, onClick }) {
   const isLeft = side === "left";
+  const { url: imageUrl, loading } = useWikiImage(group.wiki);
 
   return (
     <button
@@ -25,21 +28,32 @@ export default function GroupCard({ group, side, onClick }) {
       {/* Group image */}
       <div className="relative w-full max-w-[280px] aspect-square rounded-xl overflow-hidden mb-4
         shadow-2xl shadow-black/50 border border-white/10">
-        <img
-          src={group.image}
-          alt={group.name}
-          className="w-full h-full object-cover object-top"
-          loading="eager"
-          onError={(e) => {
-            e.target.style.display = "none";
-            e.target.nextSibling.style.display = "flex";
-          }}
-        />
+        {loading ? (
+          <div className="w-full h-full bg-white/5 animate-pulse flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full border-2 border-white/20 border-t-pink-400 animate-spin" />
+          </div>
+        ) : imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={group.name}
+            className="w-full h-full object-cover object-top"
+            loading="eager"
+            referrerPolicy="no-referrer"
+            onError={(e) => {
+              e.target.style.display = "none";
+              e.target.nextSibling.style.display = "flex";
+            }}
+          />
+        ) : null}
+        {/* Fallback with initials */}
         <div
-          className="hidden w-full h-full items-center justify-center bg-gradient-to-br from-pink-600/30 to-purple-600/30 text-6xl"
-          style={{ display: "none" }}
+          className={`${!imageUrl && !loading ? "flex" : "hidden"} w-full h-full items-center justify-center
+            bg-gradient-to-br ${isLeft ? "from-pink-600/30 to-purple-600/30" : "from-violet-600/30 to-blue-600/30"}`}
+          style={imageUrl ? { display: "none" } : undefined}
         >
-          🎤
+          <span className="text-5xl font-black text-white/40">
+            {group.name.charAt(0)}
+          </span>
         </div>
       </div>
 

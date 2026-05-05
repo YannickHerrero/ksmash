@@ -1,6 +1,7 @@
+import ResultsImage from "./ResultsImage";
+
 export default function Results({ rankings, totalRounds, onPlayAgain, onContinue }) {
   const top3 = rankings.slice(0, 3);
-  const rest = rankings.slice(3, 20);
 
   const medals = ["🥇", "🥈", "🥉"];
   const podiumHeights = ["h-40", "h-32", "h-28"];
@@ -26,14 +27,9 @@ export default function Results({ rankings, totalRounds, onPlayAgain, onContinue
           return (
             <div key={group.id} className="flex flex-col items-center">
               {/* Photo */}
-              <div className={`w-20 h-20 md:w-28 md:h-28 rounded-xl overflow-hidden mb-2
-                border-2 ${idx === 0 ? "border-yellow-400 shadow-yellow-400/30" : idx === 1 ? "border-gray-300 shadow-gray-300/20" : "border-amber-600 shadow-amber-600/20"} shadow-lg`}>
-                <img
-                  src={group.image}
-                  alt={group.name}
-                  className="w-full h-full object-cover object-top"
-                  onError={(e) => { e.target.style.display = "none"; }}
-                />
+              <div className={`mb-2 border-2 rounded-xl overflow-hidden
+                ${idx === 0 ? "border-yellow-400 shadow-yellow-400/30" : idx === 1 ? "border-gray-300 shadow-gray-300/20" : "border-amber-600 shadow-amber-600/20"} shadow-lg`}>
+                <ResultsImage group={group} size="lg" />
               </div>
               {/* Name */}
               <span className="text-white font-bold text-xs md:text-sm text-center mb-1 max-w-[100px] truncate">
@@ -70,14 +66,7 @@ export default function Results({ rankings, totalRounds, onPlayAgain, onContinue
                 ${i < 3 ? "text-yellow-400" : "text-white/30"}`}>
                 {i + 1}
               </span>
-              <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-white/10">
-                <img
-                  src={group.image}
-                  alt={group.name}
-                  className="w-full h-full object-cover object-top"
-                  onError={(e) => { e.target.style.display = "none"; }}
-                />
-              </div>
+              <ResultsImage group={group} size="sm" />
               <div className="flex-1 min-w-0">
                 <p className="text-white font-semibold text-sm truncate">{group.name}</p>
                 <p className="text-white/30 text-xs">{group.company}</p>
