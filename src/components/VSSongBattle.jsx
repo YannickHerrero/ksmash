@@ -31,11 +31,13 @@ export default function VSSongBattle({ songA, songB, onChoose, onSkip, round }) 
       </div>
 
       {/* Instruction + Skip */}
-      <div className="mt-6 flex flex-col items-center gap-2">
+      <div className="mt-6 flex flex-col items-center gap-3">
         <p className="text-white/30 text-sm">Choose the song you prefer</p>
         <button
           onClick={onSkip}
-          className="text-xs text-white/20 hover:text-white/40 transition-colors cursor-pointer"
+          className="text-sm text-white/50 hover:text-white/80 bg-white/5 hover:bg-white/10
+            border border-white/10 hover:border-white/20 px-4 py-2 rounded-xl
+            transition-all duration-200 cursor-pointer active:scale-95"
         >
           I don't know these songs — skip
         </button>
