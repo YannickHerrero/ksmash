@@ -6,8 +6,7 @@ import {
   recordChoice,
   getNextMatchup,
   getRankings,
-  FIRST_CHECKPOINT,
-  CHECKPOINT_INTERVAL,
+  RESULTS_THRESHOLD,
 } from "./engine/ranking";
 import Welcome from "./components/Welcome";
 import VSBattle from "./components/VSBattle";
@@ -39,12 +38,8 @@ function App() {
       const newState = recordChoice(state, winnerId, loserId);
       setState(newState);
 
-      // Check if we hit a checkpoint
-      if (
-        (newState.totalComparisons === FIRST_CHECKPOINT ||
-          (newState.totalComparisons > FIRST_CHECKPOINT &&
-            (newState.totalComparisons - FIRST_CHECKPOINT) % CHECKPOINT_INTERVAL === 0))
-      ) {
+      // Show the checkpoint modal exactly once at the threshold
+      if (newState.totalComparisons === RESULTS_THRESHOLD) {
         setShowCheckpoint(true);
       } else {
         const next = getNextMatchup(newState, groups);
@@ -70,6 +65,8 @@ function App() {
     const next = getNextMatchup(state, groups);
     setMatchup(next);
   }, [state]);
+
+  const canSeeResults = state && state.totalComparisons >= RESULTS_THRESHOLD;
 
   return (
     <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden">
@@ -102,24 +99,30 @@ function App() {
               />
             </div>
 
-            {/* Progress bar */}
-            <div className="mt-8 w-full max-w-xs">
-              <div className="h-1 bg-white/5 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-pink-500 to-purple-500 rounded-full transition-all duration-500"
-                  style={{
-                    width: `${Math.min(
-                      100,
-                      (state.totalComparisons /
-                        (FIRST_CHECKPOINT + CHECKPOINT_INTERVAL * 2)) *
-                        100
-                    )}%`,
-                  }}
-                />
+            {/* Progress bar + See Results button */}
+            <div className="mt-8 w-full max-w-xs flex flex-col items-center gap-3">
+              <div className="w-full">
+                <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-pink-500 to-purple-500 rounded-full transition-all duration-500"
+                    style={{
+                      width: `${Math.min(100, (state.totalComparisons / RESULTS_THRESHOLD) * 100)}%`,
+                    }}
+                  />
+                </div>
+                <p className="text-center text-white/20 text-xs mt-2">
+                  {state.totalComparisons} comparisons made
+                </p>
               </div>
-              <p className="text-center text-white/20 text-xs mt-2">
-                {state.totalComparisons} comparisons made
-              </p>
+
+              {canSeeResults && (
+                <button
+                  onClick={handleShowResults}
+                  className="text-sm text-pink-400/70 hover:text-pink-300 transition-colors cursor-pointer"
+                >
+                  See my ranking
+                </button>
+              )}
             </div>
           </div>
         )}
