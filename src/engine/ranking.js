@@ -39,8 +39,22 @@ export function recordChoice(state, winnerId, loserId) {
   return { ...state, totalComparisons: state.totalComparisons + 1 };
 }
 
-export function getNextMatchup(state, groups) {
-  const { ratings, matchups, appearances } = state;
+function ladderMatchup(state, groups) {
+  const { ratings } = state;
+  // Sort by rating descending, pick from the top 10
+  const sorted = [...groups].sort((a, b) => ratings[b.id] - ratings[a.id]);
+  const topPool = sorted.slice(0, Math.min(10, sorted.length));
+
+  // Pick two different groups from the top pool
+  const i = Math.floor(Math.random() * topPool.length);
+  let j = Math.floor(Math.random() * (topPool.length - 1));
+  if (j >= i) j++;
+
+  return { groupA: topPool[i], groupB: topPool[j] };
+}
+
+function discoveryMatchup(state, groups) {
+  const { matchups, appearances } = state;
 
   // Find the minimum appearance count
   const minAppearances = Math.min(...groups.map((g) => appearances[g.id]));
@@ -58,22 +72,38 @@ export function getNextMatchup(state, groups) {
     const unseenBonus = matchups[firstPick.id].has(g.id) ? 0 : 3;
     const exposureBonus = 1 / (1 + appearances[g.id]);
     const randomness = Math.random() * 0.5;
-    // Favor unseen pairs and under-exposed groups, with randomness for variety
     const score = unseenBonus + exposureBonus + randomness;
     return { group: g, score };
   });
 
   scored.sort((a, b) => b.score - a.score);
 
-  // Pick from top candidates with some randomness
   const topN = Math.min(5, scored.length);
   const secondPick = scored[Math.floor(Math.random() * topN)].group;
 
+  return { groupA: firstPick, groupB: secondPick };
+}
+
+// Minimum rounds before ladder matches kick in
+const LADDER_THRESHOLD = 15;
+// Chance of a ladder match once threshold is reached
+const LADDER_CHANCE = 0.3;
+
+export function getNextMatchup(state, groups) {
+  let pick;
+
+  // After enough rounds, occasionally pit top-ranked groups against each other
+  if (state.totalComparisons >= LADDER_THRESHOLD && Math.random() < LADDER_CHANCE) {
+    pick = ladderMatchup(state, groups);
+  } else {
+    pick = discoveryMatchup(state, groups);
+  }
+
   // Randomly swap sides
   if (Math.random() > 0.5) {
-    return { groupA: firstPick, groupB: secondPick };
+    return { groupA: pick.groupA, groupB: pick.groupB };
   }
-  return { groupA: secondPick, groupB: firstPick };
+  return { groupA: pick.groupB, groupB: pick.groupA };
 }
 
 export function getRankings(state, groups) {
