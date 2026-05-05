@@ -85,12 +85,14 @@ function App() {
               </h1>
             </div>
 
-            <VSBattle
-              groupA={matchup.groupA}
-              groupB={matchup.groupB}
-              onChoose={handleChoice}
-              round={state.totalComparisons + 1}
-            />
+            <div key={`${matchup.groupA.id}-${matchup.groupB.id}`} className="animate-fade-in-up w-full">
+              <VSBattle
+                groupA={matchup.groupA}
+                groupB={matchup.groupB}
+                onChoose={handleChoice}
+                round={state.totalComparisons + 1}
+              />
+            </div>
 
             {/* Progress bar */}
             <div className="mt-8 w-full max-w-xs">
