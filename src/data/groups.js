@@ -36,7 +36,7 @@ const groups = [
   { id: 45, name: "2NE1", type: "group", members: ["CL", "Bom", "Dara", "Minzy"], company: "YG Entertainment", wiki: "2NE1" },
   { id: 46, name: "EVERGLOW", type: "group", members: ["E:U", "Sihyeon", "Mia", "Onda", "Aisha", "Yiren"], company: "Yuehua Entertainment", wiki: "Everglow" },
   { id: 47, name: "Hwasa", type: "soloist", members: ["Hwasa"], company: "P Nation", wiki: "Hwasa" },
-  { id: 49, name: "iKON", type: "group", members: ["Bobby", "Jay", "DK", "Song", "Chan"], company: "143 Entertainment", wiki: "IKON" },
+  { id: 49, name: "iKON", type: "group", members: ["Bobby", "Jay", "DK", "Song", "Chan"], company: "143 Entertainment", wiki: "IKon_(South_Korean_band)" },
   { id: 50, name: "Kep1er", type: "group", members: ["Yujin", "Xiaoting", "Mashiro", "Chaehyun", "Dayeon", "Hikaru", "Bahiyyih", "Youngeun", "Yeseo"], company: "WakeOne/Swing Entertainment", wiki: "Kep1er" },
   { id: 51, name: "VIVIZ", type: "group", members: ["Eunha", "SinB", "Umji"], company: "Big Planet Made", wiki: "Viviz" },
   { id: 52, name: "tripleS", type: "group", members: ["SeoYeon", "HyeRin", "JiWoo", "ChaeYeon", "YooYeon", "SooMin", "NaKyoung", "YuBin", "Kaede", "DaHyun", "Kotone", "YeonJi", "Nien", "ShinYu", "Mayu", "Lynn", "JooBin", "HaYeon", "ShiOn", "ChaeWon", "Sullin", "SeoAh", "JiYeon"], company: "MODHAUS", wiki: "TripleS" },
@@ -47,7 +47,7 @@ const groups = [
   // --- Newly added ---
   { id: 56, name: "XG", type: "group", members: ["Jurin", "Chisa", "Harvey", "Hinata", "Juria", "Cocona", "Maya"], company: "XGALX", wiki: "XG_(group)" },
   { id: 57, name: "Young Posse", type: "group", members: ["Jiana", "Yeonjung", "Doeun", "Jieun", "Yuki"], company: "DSP Media", wiki: "Young_Posse" },
-  { id: 58, name: "BIBI", type: "soloist", members: ["BIBI"], company: "Feel Ghood Music", wiki: "Bibi_(South_Korean_singer)" },
+  { id: 58, name: "BIBI", type: "soloist", members: ["BIBI"], company: "Feel Ghood Music", wiki: "Bibi_(singer)" },
   { id: 59, name: "Jvcki Wai", type: "soloist", members: ["Jvcki Wai"], company: "Independent", wiki: "Jvcki_Wai" },
   { id: 60, name: "Zico", type: "soloist", members: ["Zico"], company: "KOZ Entertainment", wiki: "Zico_(rapper)" },
   { id: 61, name: "Giriboy", type: "soloist", members: ["Giriboy"], company: "Just Music", wiki: "Giriboy" },
