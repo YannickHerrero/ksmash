@@ -15,6 +15,7 @@ import {
   getNextSongMatchup,
   getArtistRankings,
   getSongAccuracy,
+  skipSongs,
 } from "./engine/songRanking";
 import Welcome from "./components/Welcome";
 import VSBattle from "./components/VSBattle";
@@ -68,6 +69,12 @@ function App() {
     },
     [state]
   );
+
+  const handleSkipSongs = useCallback(() => {
+    const newState = skipSongs(state, matchup.songA.id, matchup.songB.id);
+    setState(newState);
+    setMatchup(getNextSongMatchup(newState, songs));
+  }, [state, matchup]);
 
   const handleShowResults = useCallback(() => {
     setScreen("results");
@@ -153,6 +160,7 @@ function App() {
                   songA={matchup.songA}
                   songB={matchup.songB}
                   onChoose={handleSongChoice}
+                  onSkip={handleSkipSongs}
                   round={state.totalComparisons + 1}
                 />
               )}

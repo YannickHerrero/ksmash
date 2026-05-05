@@ -1,6 +1,6 @@
 import SongCard from "./SongCard";
 
-export default function VSSongBattle({ songA, songB, onChoose, round }) {
+export default function VSSongBattle({ songA, songB, onChoose, onSkip, round }) {
   return (
     <div className="relative flex flex-col items-center w-full max-w-5xl mx-auto px-4">
       {/* Round counter */}
@@ -30,10 +30,16 @@ export default function VSSongBattle({ songA, songB, onChoose, round }) {
         <SongCard song={songB} side="right" onClick={() => onChoose(songB.id, songA.id)} />
       </div>
 
-      {/* Instruction */}
-      <p className="mt-6 text-white/30 text-sm text-center">
-        Choose the song you prefer
-      </p>
+      {/* Instruction + Skip */}
+      <div className="mt-6 flex flex-col items-center gap-2">
+        <p className="text-white/30 text-sm">Choose the song you prefer</p>
+        <button
+          onClick={onSkip}
+          className="text-xs text-white/20 hover:text-white/40 transition-colors cursor-pointer"
+        >
+          I don't know these songs — skip
+        </button>
+      </div>
     </div>
   );
 }

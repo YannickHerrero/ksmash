@@ -30,7 +30,13 @@ export function createSongRankings(songs) {
     opponentRatingSum[song.id] = 0;
   }
 
-  return { ratings, rd, matchups, appearances, opponentRatingSum, totalComparisons: 0 };
+  return { ratings, rd, matchups, appearances, opponentRatingSum, skippedSongs: new Set(), totalComparisons: 0 };
+}
+
+export function skipSongs(state, songAId, songBId) {
+  state.skippedSongs.add(songAId);
+  state.skippedSongs.add(songBId);
+  return { ...state };
 }
 
 export function recordSongChoice(state, winnerId, loserId) {
@@ -157,19 +163,22 @@ const PHASE2_START = 80;
 const PHASE3_START = 120;
 
 export function getNextSongMatchup(state, songs) {
+  // Filter out skipped songs
+  const available = songs.filter((s) => !state.skippedSongs.has(s.id));
+
   let pick;
   const round = state.totalComparisons;
 
   if (round < PHASE2_START) {
-    pick = discoverySongMatchup(state, songs);
+    pick = discoverySongMatchup(state, available);
   } else if (round < PHASE3_START) {
     pick = Math.random() < 0.4
-      ? bracketSongMatchup(state, songs)
-      : discoverySongMatchup(state, songs);
+      ? bracketSongMatchup(state, available)
+      : discoverySongMatchup(state, available);
   } else {
     pick = Math.random() < 0.6
-      ? bracketSongMatchup(state, songs)
-      : discoverySongMatchup(state, songs);
+      ? bracketSongMatchup(state, available)
+      : discoverySongMatchup(state, available);
   }
 
   // Randomly swap sides
