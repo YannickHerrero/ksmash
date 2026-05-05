@@ -1,7 +1,14 @@
 // ELO-based ranking system for K-pop group comparison
 
-const K_FACTOR = 32;
 const DEFAULT_RATING = 1500;
+
+// Adaptive K-factor: higher when a group has few appearances (early wins matter more)
+function kFactor(appearances) {
+  if (appearances < 3) return 80;
+  if (appearances < 6) return 56;
+  if (appearances < 10) return 40;
+  return 32;
+}
 
 export function createRankings(groups) {
   const ratings = {};
@@ -27,8 +34,11 @@ export function recordChoice(state, winnerId, loserId) {
   const expectedA = expectedScore(ratings[winnerId], ratings[loserId]);
   const expectedB = 1 - expectedA;
 
-  ratings[winnerId] += K_FACTOR * (1 - expectedA);
-  ratings[loserId] += K_FACTOR * (0 - expectedB);
+  const kW = kFactor(appearances[winnerId]);
+  const kL = kFactor(appearances[loserId]);
+
+  ratings[winnerId] += kW * (1 - expectedA);
+  ratings[loserId] += kL * (0 - expectedB);
 
   matchups[winnerId].add(loserId);
   matchups[loserId].add(winnerId);
