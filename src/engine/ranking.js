@@ -14,14 +14,16 @@ export function createRankings(groups) {
   const ratings = {};
   const matchups = {};
   const appearances = {};
+  const opponentRatingSum = {}; // sum of opponent ratings faced
 
   for (const group of groups) {
     ratings[group.id] = DEFAULT_RATING;
     matchups[group.id] = new Set();
     appearances[group.id] = 0;
+    opponentRatingSum[group.id] = 0;
   }
 
-  return { ratings, matchups, appearances, totalComparisons: 0 };
+  return { ratings, matchups, appearances, opponentRatingSum, totalComparisons: 0 };
 }
 
 function expectedScore(ratingA, ratingB) {
@@ -29,7 +31,11 @@ function expectedScore(ratingA, ratingB) {
 }
 
 export function recordChoice(state, winnerId, loserId) {
-  const { ratings, matchups, appearances } = state;
+  const { ratings, matchups, appearances, opponentRatingSum } = state;
+
+  // Record opponent ratings before updating ELO
+  opponentRatingSum[winnerId] += ratings[loserId];
+  opponentRatingSum[loserId] += ratings[winnerId];
 
   const expectedA = expectedScore(ratings[winnerId], ratings[loserId]);
   const expectedB = 1 - expectedA;
@@ -49,6 +55,19 @@ export function recordChoice(state, winnerId, loserId) {
   return { ...state, totalComparisons: state.totalComparisons + 1 };
 }
 
+// Average opponent rating for a group (DEFAULT_RATING if no appearances yet)
+function avgOpponentRating(state, groupId) {
+  if (state.appearances[groupId] === 0) return DEFAULT_RATING;
+  return state.opponentRatingSum[groupId] / state.appearances[groupId];
+}
+
+// Median rating across all groups
+function medianRating(state, groups) {
+  const sorted = groups.map((g) => state.ratings[g.id]).sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+}
+
 function ladderMatchup(state, groups) {
   const { ratings } = state;
   // Sort by rating descending, pick from the top 10
@@ -64,7 +83,7 @@ function ladderMatchup(state, groups) {
 }
 
 function discoveryMatchup(state, groups) {
-  const { matchups, appearances } = state;
+  const { ratings, matchups, appearances } = state;
 
   // Find the minimum appearance count
   const minAppearances = Math.min(...groups.map((g) => appearances[g.id]));
@@ -75,14 +94,30 @@ function discoveryMatchup(state, groups) {
   // Always pick at least one group from the least-seen pool
   const firstPick = underExposed[Math.floor(Math.random() * underExposed.length)];
 
-  // For the opponent, build candidates and score them
+  // For the opponent, score candidates with opponent-strength balancing
   const candidates = groups.filter((g) => g.id !== firstPick.id);
+  const median = medianRating(state, groups);
+  const firstAvgOpp = avgOpponentRating(state, firstPick.id);
 
   const scored = candidates.map((g) => {
     const unseenBonus = matchups[firstPick.id].has(g.id) ? 0 : 3;
     const exposureBonus = 1 / (1 + appearances[g.id]);
     const randomness = Math.random() * 0.5;
-    const score = unseenBonus + exposureBonus + randomness;
+
+    // Opponent-strength balancing: if this group has faced mostly strong
+    // opponents, prefer a weaker one next (and vice versa)
+    let balanceBonus = 0;
+    if (appearances[firstPick.id] > 0) {
+      if (firstAvgOpp > median) {
+        // Faced too many strong opponents — prefer weaker ones
+        balanceBonus = ratings[g.id] < median ? 1.5 : 0;
+      } else {
+        // Faced too many weak opponents — prefer stronger ones
+        balanceBonus = ratings[g.id] >= median ? 1.5 : 0;
+      }
+    }
+
+    const score = unseenBonus + exposureBonus + balanceBonus + randomness;
     return { group: g, score };
   });
 
