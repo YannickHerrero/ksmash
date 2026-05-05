@@ -55,12 +55,11 @@ export function getNextMatchup(state, groups) {
   const candidates = groups.filter((g) => g.id !== firstPick.id);
 
   const scored = candidates.map((g) => {
-    const ratingDiff = Math.abs(ratings[firstPick.id] - ratings[g.id]);
-    const closeness = 1 / (1 + ratingDiff);
-    const unseenBonus = matchups[firstPick.id].has(g.id) ? 0 : 2;
+    const unseenBonus = matchups[firstPick.id].has(g.id) ? 0 : 3;
     const exposureBonus = 1 / (1 + appearances[g.id]);
-    // Combined score: favor unseen pairs, under-exposed groups, then closeness
-    const score = unseenBonus + exposureBonus + closeness * 0.5;
+    const randomness = Math.random() * 0.5;
+    // Favor unseen pairs and under-exposed groups, with randomness for variety
+    const score = unseenBonus + exposureBonus + randomness;
     return { group: g, score };
   });
 
