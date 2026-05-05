@@ -57,7 +57,7 @@ export default function Results({ rankings, totalRounds, onPlayAgain, onContinue
           <h3 className="text-white/60 text-sm font-medium">Full Rankings</h3>
         </div>
         <div className="divide-y divide-white/5">
-          {rankings.slice(0, 20).map((group, i) => (
+          {rankings.map((group, i) => (
             <div
               key={group.id}
               className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors"
