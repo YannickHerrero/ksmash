@@ -207,4 +207,13 @@ export function getRankings(state, groups) {
     .sort((a, b) => b.rating - a.rating);
 }
 
+// Ranking accuracy: 0-100% based on how much uncertainty remains
+// 0% = all groups at max RD (no data), 100% = all groups at MIN_RD
+export function getAccuracy(state, groups) {
+  const avgRd =
+    groups.reduce((sum, g) => sum + state.rd[g.id], 0) / groups.length;
+  const pct = ((DEFAULT_RD - avgRd) / (DEFAULT_RD - MIN_RD)) * 100;
+  return Math.max(0, Math.min(100, Math.round(pct)));
+}
+
 export const RESULTS_THRESHOLD = 50;

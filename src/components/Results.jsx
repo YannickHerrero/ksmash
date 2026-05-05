@@ -1,6 +1,6 @@
 import ResultsImage from "./ResultsImage";
 
-export default function Results({ rankings, totalRounds, onPlayAgain, onContinue }) {
+export default function Results({ rankings, totalRounds, accuracy, onPlayAgain, onContinue }) {
   const top3 = rankings.slice(0, 3);
 
   const medals = ["🥇", "🥈", "🥉"];
@@ -16,6 +16,15 @@ export default function Results({ rankings, totalRounds, onPlayAgain, onContinue
         </h1>
         <p className="text-white/40 text-sm">
           Based on {totalRounds} comparisons
+          <span className={`ml-2 font-medium ${
+            accuracy < 40
+              ? "text-orange-400/70"
+              : accuracy < 70
+                ? "text-yellow-400/70"
+                : "text-emerald-400/70"
+          }`}>
+            — {accuracy}% accuracy
+          </span>
         </p>
       </div>
 

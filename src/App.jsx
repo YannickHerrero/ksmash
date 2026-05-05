@@ -6,18 +6,18 @@ import {
   recordChoice,
   getNextMatchup,
   getRankings,
-  RESULTS_THRESHOLD,
+  getAccuracy,
 } from "./engine/ranking";
 import Welcome from "./components/Welcome";
 import VSBattle from "./components/VSBattle";
-import CheckpointModal from "./components/CheckpointModal";
 import Results from "./components/Results";
+
+const ACCURACY_UNLOCK = 20; // show "See my ranking" button at 20% accuracy
 
 function App() {
   const [screen, setScreen] = useState("welcome"); // welcome | battle | results
   const [state, setState] = useState(null);
   const [matchup, setMatchup] = useState(null);
-  const [showCheckpoint, setShowCheckpoint] = useState(false);
 
   // Prefetch all Wikipedia images on mount
   useEffect(() => {
@@ -30,33 +30,19 @@ function App() {
     setState(initial);
     setMatchup(firstMatchup);
     setScreen("battle");
-    setShowCheckpoint(false);
   }, []);
 
   const handleChoice = useCallback(
     (winnerId, loserId) => {
       const newState = recordChoice(state, winnerId, loserId);
       setState(newState);
-
-      // Show the checkpoint modal exactly once at the threshold
-      if (newState.totalComparisons === RESULTS_THRESHOLD) {
-        setShowCheckpoint(true);
-      } else {
-        const next = getNextMatchup(newState, groups);
-        setMatchup(next);
-      }
+      const next = getNextMatchup(newState, groups);
+      setMatchup(next);
     },
     [state]
   );
 
-  const handleContinue = useCallback(() => {
-    setShowCheckpoint(false);
-    const next = getNextMatchup(state, groups);
-    setMatchup(next);
-  }, [state]);
-
   const handleShowResults = useCallback(() => {
-    setShowCheckpoint(false);
     setScreen("results");
   }, []);
 
@@ -66,7 +52,8 @@ function App() {
     setMatchup(next);
   }, [state]);
 
-  const canSeeResults = state && state.totalComparisons >= RESULTS_THRESHOLD;
+  const accuracy = state ? getAccuracy(state, groups) : 0;
+  const canSeeResults = accuracy >= ACCURACY_UNLOCK;
 
   return (
     <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden">
@@ -99,20 +86,35 @@ function App() {
               />
             </div>
 
-            {/* Progress bar + See Results button */}
+            {/* Accuracy bar + See Results button */}
             <div className="mt-8 w-full max-w-xs flex flex-col items-center gap-3">
               <div className="w-full">
-                <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-pink-500 to-purple-500 rounded-full transition-all duration-500"
-                    style={{
-                      width: `${Math.min(100, (state.totalComparisons / RESULTS_THRESHOLD) * 100)}%`,
-                    }}
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      accuracy < 40
+                        ? "bg-gradient-to-r from-red-500 to-orange-500"
+                        : accuracy < 70
+                          ? "bg-gradient-to-r from-orange-500 to-yellow-500"
+                          : "bg-gradient-to-r from-green-500 to-emerald-400"
+                    }`}
+                    style={{ width: `${accuracy}%` }}
                   />
                 </div>
-                <p className="text-center text-white/20 text-xs mt-2">
-                  {state.totalComparisons} comparisons made
-                </p>
+                <div className="flex justify-between items-center mt-1.5">
+                  <p className="text-white/20 text-xs">
+                    {state.totalComparisons} comparisons
+                  </p>
+                  <p className={`text-xs font-medium ${
+                    accuracy < 40
+                      ? "text-orange-400/70"
+                      : accuracy < 70
+                        ? "text-yellow-400/70"
+                        : "text-emerald-400/70"
+                  }`}>
+                    {accuracy}% accuracy
+                  </p>
+                </div>
               </div>
 
               {canSeeResults && (
@@ -131,20 +133,12 @@ function App() {
           <Results
             rankings={getRankings(state, groups)}
             totalRounds={state.totalComparisons}
+            accuracy={accuracy}
             onPlayAgain={startGame}
             onContinue={handleContinueFromResults}
           />
         )}
       </div>
-
-      {/* Checkpoint modal */}
-      {showCheckpoint && (
-        <CheckpointModal
-          round={state.totalComparisons}
-          onContinue={handleContinue}
-          onShowResults={handleShowResults}
-        />
-      )}
     </div>
   );
 }
