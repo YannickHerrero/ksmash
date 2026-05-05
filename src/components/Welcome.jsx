@@ -25,25 +25,49 @@ export default function Welcome({ onStart }) {
           The more you play, the more accurate your ranking gets.
         </p>
 
-        <button
-          onClick={onStart}
-          className="relative py-4 px-10 rounded-2xl font-bold text-lg text-white
-            bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500
-            hover:from-pink-400 hover:via-purple-400 hover:to-blue-400
-            transition-all duration-300
-            shadow-xl shadow-purple-500/30 hover:shadow-purple-500/50
-            active:scale-95 cursor-pointer
-            group"
-        >
-          <span className="relative z-10">Start Playing</span>
-          {/* Button glow */}
-          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500
-            opacity-30 blur-lg group-hover:opacity-50 transition-opacity -z-10" />
-        </button>
+        {/* Mode selection */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+          <button
+            onClick={() => onStart("groups")}
+            className="relative py-4 px-8 rounded-2xl font-bold text-lg text-white
+              bg-gradient-to-r from-pink-500 to-purple-600
+              hover:from-pink-400 hover:to-purple-500
+              transition-all duration-300
+              shadow-xl shadow-pink-500/30 hover:shadow-pink-500/50
+              active:scale-95 cursor-pointer
+              group"
+          >
+            <span className="relative z-10 flex items-center gap-2">
+              <span className="text-2xl">👑</span>
+              Groups Mode
+            </span>
+            <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600
+              opacity-30 blur-lg group-hover:opacity-50 transition-opacity -z-10" />
+          </button>
 
-        <p className="mt-8 text-xs text-white/20">
-          55 groups & soloists to rank
-        </p>
+          <button
+            onClick={() => onStart("songs")}
+            className="relative py-4 px-8 rounded-2xl font-bold text-lg text-white
+              bg-gradient-to-r from-violet-500 to-blue-600
+              hover:from-violet-400 hover:to-blue-500
+              transition-all duration-300
+              shadow-xl shadow-violet-500/30 hover:shadow-violet-500/50
+              active:scale-95 cursor-pointer
+              group"
+          >
+            <span className="relative z-10 flex items-center gap-2">
+              <span className="text-2xl">🎵</span>
+              Music Mode
+            </span>
+            <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-violet-500 to-blue-600
+              opacity-30 blur-lg group-hover:opacity-50 transition-opacity -z-10" />
+          </button>
+        </div>
+
+        <div className="flex flex-col gap-1 text-xs text-white/20">
+          <p><span className="text-pink-400/40">Groups</span> — compare artists head-to-head</p>
+          <p><span className="text-violet-400/40">Music</span> — compare songs, rank the artists</p>
+        </div>
       </div>
     </div>
   );
