@@ -1,16 +1,58 @@
-# React + Vite
+# KSMASH
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Find your ultimate K-pop bias through head-to-head battles.
 
-Currently, two official plugins are available:
+KSMASH pits K-pop groups and soloists against each other two at a time and uses
+your picks to build a personal ranking. The more rounds you play, the more
+accurate the ranking gets.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## How it works
 
-## React Compiler
+- **Head-to-head matchups.** Pick the group or soloist you prefer between two options.
+- **ELO ratings.** Each pick updates ratings using an ELO model with an adaptive
+  K-factor — early wins move the needle more, so the ranking takes shape quickly.
+- **Discovery first, then ladder matches.** Early matchups prioritize artists you
+  haven't seen yet. Once you've made enough comparisons, top-ranked artists start
+  facing each other to refine the leaderboard.
+- **Live ranking.** After 50 comparisons you can stop any time and see your full
+  ranked list, or keep going to sharpen the order.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The ranking engine lives in [`src/engine/ranking.js`](src/engine/ranking.js) and the
+roster in [`src/data/groups.js`](src/data/groups.js). Artist images are pulled from
+the Wikipedia API at runtime — no images are bundled with the app.
 
-## Expanding the ESLint configuration
+## Getting started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Requires Node.js 20+.
+
+```bash
+npm install
+npm run dev
+```
+
+Then open the URL Vite prints (usually `http://localhost:5173`).
+
+### Other scripts
+
+```bash
+npm run build     # production build
+npm run preview   # preview the production build locally
+npm run lint      # run ESLint
+```
+
+## Tech stack
+
+- React 19
+- Vite
+- Tailwind CSS 4
+- Wikipedia REST API for artist images
+
+## Contributing
+
+Contributions are welcome. The roster in `src/data/groups.js` is the easiest place
+to start — add or update groups and soloists, making sure the `wiki` slug matches
+the article title on English Wikipedia.
+
+## License
+
+MIT
