@@ -6,13 +6,15 @@ const DEFAULT_RATING = 1500;
 export function createRankings(groups) {
   const ratings = {};
   const matchups = {};
+  const appearances = {};
 
   for (const group of groups) {
     ratings[group.id] = DEFAULT_RATING;
     matchups[group.id] = new Set();
+    appearances[group.id] = 0;
   }
 
-  return { ratings, matchups, totalComparisons: 0 };
+  return { ratings, matchups, appearances, totalComparisons: 0 };
 }
 
 function expectedScore(ratingA, ratingB) {
@@ -20,7 +22,7 @@ function expectedScore(ratingA, ratingB) {
 }
 
 export function recordChoice(state, winnerId, loserId) {
-  const { ratings, matchups } = state;
+  const { ratings, matchups, appearances } = state;
 
   const expectedA = expectedScore(ratings[winnerId], ratings[loserId]);
   const expectedB = 1 - expectedA;
@@ -31,43 +33,48 @@ export function recordChoice(state, winnerId, loserId) {
   matchups[winnerId].add(loserId);
   matchups[loserId].add(winnerId);
 
+  appearances[winnerId]++;
+  appearances[loserId]++;
+
   return { ...state, totalComparisons: state.totalComparisons + 1 };
 }
 
 export function getNextMatchup(state, groups) {
-  const { ratings, matchups } = state;
+  const { ratings, matchups, appearances } = state;
 
-  // Prioritize pairs that haven't faced each other yet
-  const unseenPairs = [];
-  const seenPairs = [];
+  // Find the minimum appearance count
+  const minAppearances = Math.min(...groups.map((g) => appearances[g.id]));
 
-  for (let i = 0; i < groups.length; i++) {
-    for (let j = i + 1; j < groups.length; j++) {
-      const a = groups[i];
-      const b = groups[j];
-      const ratingDiff = Math.abs(ratings[a.id] - ratings[b.id]);
+  // Groups that have been seen the least
+  const underExposed = groups.filter((g) => appearances[g.id] === minAppearances);
 
-      if (!matchups[a.id].has(b.id)) {
-        // Prefer matchups between similarly-rated groups (more interesting)
-        unseenPairs.push({ a, b, closeness: 1 / (1 + ratingDiff) });
-      } else {
-        seenPairs.push({ a, b, closeness: 1 / (1 + ratingDiff) });
-      }
-    }
-  }
+  // Always pick at least one group from the least-seen pool
+  const firstPick = underExposed[Math.floor(Math.random() * underExposed.length)];
 
-  const pool = unseenPairs.length > 0 ? unseenPairs : seenPairs;
+  // For the opponent, build candidates and score them
+  const candidates = groups.filter((g) => g.id !== firstPick.id);
 
-  // Sort by closeness (closest ratings first) and pick from top candidates with some randomness
-  pool.sort((x, y) => y.closeness - x.closeness);
-  const topN = Math.min(5, pool.length);
-  const pick = pool[Math.floor(Math.random() * topN)];
+  const scored = candidates.map((g) => {
+    const ratingDiff = Math.abs(ratings[firstPick.id] - ratings[g.id]);
+    const closeness = 1 / (1 + ratingDiff);
+    const unseenBonus = matchups[firstPick.id].has(g.id) ? 0 : 2;
+    const exposureBonus = 1 / (1 + appearances[g.id]);
+    // Combined score: favor unseen pairs, under-exposed groups, then closeness
+    const score = unseenBonus + exposureBonus + closeness * 0.5;
+    return { group: g, score };
+  });
 
-  // Randomly swap sides so it's not always the same order
+  scored.sort((a, b) => b.score - a.score);
+
+  // Pick from top candidates with some randomness
+  const topN = Math.min(5, scored.length);
+  const secondPick = scored[Math.floor(Math.random() * topN)].group;
+
+  // Randomly swap sides
   if (Math.random() > 0.5) {
-    return { groupA: pick.a, groupB: pick.b };
+    return { groupA: firstPick, groupB: secondPick };
   }
-  return { groupA: pick.b, groupB: pick.a };
+  return { groupA: secondPick, groupB: firstPick };
 }
 
 export function getRankings(state, groups) {
