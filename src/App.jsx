@@ -43,8 +43,8 @@ function App() {
       setState(initial);
       setMatchup(firstMatchup);
     } else {
-      const initial = createSongRankings(songs);
-      const firstMatchup = getNextSongMatchup(initial, songs);
+      const initial = createSongRankings(songs, groups);
+      const firstMatchup = getNextSongMatchup(initial, songs, groups);
       setState(initial);
       setMatchup(firstMatchup);
     }
@@ -62,18 +62,20 @@ function App() {
   );
 
   const handleSongChoice = useCallback(
-    (winnerId, loserId) => {
-      const newState = recordSongChoice(state, winnerId, loserId);
+    (winnerSongId, loserSongId) => {
+      const winnerSong = songs.find((s) => s.id === winnerSongId);
+      const loserSong = songs.find((s) => s.id === loserSongId);
+      const newState = recordSongChoice(state, winnerSong, loserSong);
       setState(newState);
-      setMatchup(getNextSongMatchup(newState, songs));
+      setMatchup(getNextSongMatchup(newState, songs, groups));
     },
     [state]
   );
 
   const handleSkipSongs = useCallback(() => {
-    const newState = skipSongs(state, matchup.songA.id, matchup.songB.id);
+    const newState = skipSongs(state, matchup.songA, matchup.songB);
     setState(newState);
-    setMatchup(getNextSongMatchup(newState, songs));
+    setMatchup(getNextSongMatchup(newState, songs, groups));
   }, [state, matchup]);
 
   const handleShowResults = useCallback(() => {
@@ -85,7 +87,7 @@ function App() {
     if (mode === "groups") {
       setMatchup(getNextMatchup(state, groups));
     } else {
-      setMatchup(getNextSongMatchup(state, songs));
+      setMatchup(getNextSongMatchup(state, songs, groups));
     }
   }, [state, mode]);
 
@@ -99,7 +101,7 @@ function App() {
   const accuracy = state
     ? mode === "groups"
       ? getAccuracy(state, groups)
-      : getSongAccuracy(state, songs)
+      : getSongAccuracy(state, groups)
     : 0;
 
   const canSeeResults = accuracy >= ACCURACY_UNLOCK;
@@ -107,7 +109,7 @@ function App() {
   const rankings = state
     ? mode === "groups"
       ? getRankings(state, groups)
-      : getArtistRankings(state, songs, groups)
+      : getArtistRankings(state, groups)
     : [];
 
   return (
